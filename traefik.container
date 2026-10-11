@@ -1,0 +1,26 @@
+[Unit]
+Description=Traefik Reverse Proxy
+After=traefik-public-network.service podman.socket
+Requires=traefik-public-network.service
+
+[Container]
+ContainerName=traefik
+Image=docker.io/traefik:v3.7.14
+
+PublishPort=8080:80
+PublishPort=8443:443
+PublishPort=127.0.0.1:8081:8080
+
+Volume=%t/podman/podman.sock:/var/run/docker.sock:ro
+Volume=%h/projects/traefik-iac/traefik.yml:/etc/traefik/traefik.yml:ro,z
+Volume=%h/projects/traefik-iac/acme.json:/letsencrypt/acme.json:z
+Volume=%h/projects/traefik-iac/logs:/var/log/traefik:z
+
+Network=traefik-public.network
+
+[Service]
+Restart=always
+CPUWeight=50
+
+[Install]
+WantedBy=default.target

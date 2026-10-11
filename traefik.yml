@@ -1,0 +1,49 @@
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
+
+  websecure:
+    address: ":443"
+
+  traefik:
+    address: ":8080"
+
+api:
+  dashboard: true
+  debug: true
+  insecure: true
+
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+    network: traefik-public
+
+http:
+  routers:
+    api:
+      entryPoints:
+        - "traefik"
+      service: api@internal
+      rule: "PathPrefix(`/`)"
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: ev.kotov@vk.ru
+      storage: /letsencrypt/acme.json
+      httpChallenge:
+        entryPoint: web
+
+log:
+  level: DEBUG
+  filePath: /var/log/traefik/traefik.log
+
+accessLog:
+  filePath: /var/log/traefik/access.log
