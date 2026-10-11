@@ -16,6 +16,8 @@ Volume=%h/projects/traefik-iac/traefik.yml:/etc/traefik/traefik.yml:ro,z
 Volume=%h/projects/traefik-iac/acme.json:/letsencrypt/acme.json:z
 Volume=%h/projects/traefik-iac/logs:/var/log/traefik:z
 
+SecurityLabelDisable=true
+
 Network=traefik-public.network
 
 [Service]

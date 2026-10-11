@@ -37,23 +37,22 @@ if [ ! -f "$PROJECT_DIR/acme.json" ]; then
     log "$S" "Created acme.json."
 fi
 
+log "$I" "Correct rights."
 chmod 600 "$PROJECT_DIR/acme.json"
-log "$S" "Chmod 600 to acme.json."
 
 log "$I" "Check yml config."
-
 if [ ! -f "$PROJECT_DIR/traefik.yml" ]; then
     log "$E" "Not found  traefik.yml in $PROJECT_DIR"
     exit 1
 fi
 
-log "$I" "Containers and networks. Creating Quadlet network symlinks."
+log "$I" "Containers. Creating Quadlet network symlinks."
 ln -sf "$PROJECT_DIR/traefik.container" "$QUADLET_DIR/"
 
 log "$I" "Reloading systemd configuration"
 systemctl --user daemon-reload
 
-log "$I" "Restart Traefik service"
+log "$I" "Restart service"
 systemctl --user restart traefik.service
 
 log "$I" "Check status... Please, waiting."
@@ -61,7 +60,7 @@ sleep 3
 systemctl --user status traefik.service --no-pager
 podman ps --filter name=traefik
 
-log "$S" "Traefik rootless services deployed."
+log "$S" "Service deployed."
 
 log "$I" "Dashboard: http://localhost:8081/dashboard/"
-log "$I" "Проверка: curl http://localhost:8081/api/version"
+log "$I" "Check: curl http://localhost:8081/api/version"
